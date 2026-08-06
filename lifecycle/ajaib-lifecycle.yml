@@ -1,0 +1,37 @@
+generated: '2026-08-06'
+method: derived
+source: openapi/ajaib-coin-exchange-openapi.yml
+docs: https://ajaib.gitbook.io/coin-exchange
+versioning:
+  scheme: uri-path
+  current: v1
+  path_prefix: /coin/internal/v1
+  policy_url: null
+  note: >-
+    The version is carried in the URI path. Ajaib publishes no written
+    versioning policy, and the docs carry no version or "last updated" stamp.
+deprecation:
+  policy_url: null
+  sunset_header: false
+  deprecation_header: false
+  note: No deprecation policy and no RFC 8594 Sunset/Deprecation header support found.
+sla:
+  url: null
+  uptime_target: null
+status_page: null
+status_page_note: >-
+  No status page was found. status.ajaib.co.id does not resolve; no status link
+  is published in the Coin Exchange documentation.
+changelog: null
+changelog_note: >-
+  The GitBook space publishes no dated changelog or release-notes page.
+deprecated_operations: []
+terms:
+  note: >-
+    The overview states that by accessing the Ajaib Coin Exchange API the
+    client agrees to be bound by Ajaib's Terms of Use.
+gaps:
+  - No status page.
+  - No deprecation or sunset policy.
+  - No changelog / release notes for the API.
+  - No published SLA.

@@ -1,0 +1,105 @@
+generated: '2026-08-06'
+method: derived
+status: candidate
+source: openapi/ajaib-coin-exchange-openapi.yml
+note: >-
+  Ajaib publishes no MCP server. This is a candidate tool surface derived from
+  the operations in the Ajaib Coin Exchange API so the trading capability is
+  legible to agents; it is not operated by Ajaib and no endpoint is claimed.
+  Every tool below inherits its real input contract from the backing OpenAPI
+  operation named in source_operation.
+server:
+  name: ajaib-coin-exchange
+  transport: null
+  url: null
+  operated_by: null
+tools:
+- name: get_server_time
+  description: Retrieve the exchange server time in unix epoch milliseconds, UTC.
+  source_operation: openapi/ajaib-coin-exchange-openapi.yml#getServerTime
+  auth_required: false
+  action_class: read
+- name: get_exchange_info
+  description: Retrieve the supported trading pairs and their precision and tick size.
+  source_operation: openapi/ajaib-coin-exchange-openapi.yml#getExchangeInfo
+  auth_required: false
+  action_class: read
+- name: get_order_book
+  description: Retrieve order book bids and asks for one trading pair.
+  source_operation: openapi/ajaib-coin-exchange-openapi.yml#getDepth
+  auth_required: true
+  action_class: read
+- name: get_price
+  description: Retrieve the latest price for one trading pair.
+  source_operation: openapi/ajaib-coin-exchange-openapi.yml#getPrice
+  auth_required: true
+  action_class: read
+- name: get_portfolio
+  description: Retrieve the exchange client's aggregated asset balances.
+  source_operation: openapi/ajaib-coin-exchange-openapi.yml#getPortfolio
+  auth_required: true
+  action_class: read
+- name: list_trades
+  description: List executed trades for a trading pair, paged by from_trade_id.
+  source_operation: openapi/ajaib-coin-exchange-openapi.yml#getTrades
+  auth_required: true
+  action_class: read
+- name: get_order
+  description: Retrieve a single order by order_id and symbol.
+  source_operation: openapi/ajaib-coin-exchange-openapi.yml#getOrder
+  auth_required: true
+  action_class: read
+- name: list_open_orders
+  description: List open orders for a trading pair, paged by from_order_id.
+  source_operation: openapi/ajaib-coin-exchange-openapi.yml#getOpenOrders
+  auth_required: true
+  action_class: read
+- name: create_order
+  description: Place a new LIMIT or LIMIT_MAKER spot order. Moves real funds.
+  source_operation: openapi/ajaib-coin-exchange-openapi.yml#createOrder
+  auth_required: true
+  action_class: write
+  consequence: financial
+- name: create_batch_orders
+  description: Place several orders on one trading pair in a single request.
+  source_operation: openapi/ajaib-coin-exchange-openapi.yml#createBatchOrders
+  auth_required: true
+  action_class: write
+  consequence: financial
+- name: create_self_trading_order
+  description: >-
+    Place a paired buy and sell self-trading order. Restricted to internal
+    market-maker exchange clients.
+  source_operation: openapi/ajaib-coin-exchange-openapi.yml#createSelfTradingOrder
+  auth_required: true
+  action_class: write
+  consequence: financial
+- name: cancel_order
+  description: Cancel one open order by order_id and symbol.
+  source_operation: openapi/ajaib-coin-exchange-openapi.yml#cancelOrder
+  auth_required: true
+  action_class: write
+  consequence: financial
+- name: cancel_batch_orders
+  description: Cancel a list of orders on one trading pair.
+  source_operation: openapi/ajaib-coin-exchange-openapi.yml#cancelBatchOrders
+  auth_required: true
+  action_class: write
+  consequence: financial
+- name: cancel_all_open_orders
+  description: Cancel every open order on one trading pair.
+  source_operation: openapi/ajaib-coin-exchange-openapi.yml#cancelAllOpenOrders
+  auth_required: true
+  action_class: write
+  consequence: financial
+agent_cautions:
+- >-
+  No idempotency key is documented. An agent that retries create_order or
+  create_batch_orders after a timeout may place duplicate orders against real
+  funds.
+- >-
+  A 200 on an order write means the exchange received the instruction, not that
+  it executed. Confirm with get_order before acting on the result.
+- >-
+  Signing is proprietary and per-request; an MCP server would need the client's
+  ECDSA private key, which the docs say must never be shared.

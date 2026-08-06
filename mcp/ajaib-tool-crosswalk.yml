@@ -1,0 +1,120 @@
+generated: '2026-08-06'
+method: derived
+source: mcp/ajaib-mcp.yml
+note: >-
+  Ajaib operates no MCP server and no GraphQL surface. This crosswalk binds the
+  candidate MCP tool surface in mcp/ajaib-mcp.yml to the OpenAPI operations that
+  back it, so each tool inherits a real inputSchema instead of a guessed one.
+  Because the tools are derived from the same spec, coverage is 1:1 by
+  construction and every binding is high confidence.
+surfaces:
+  openapi:
+    file: openapi/ajaib-coin-exchange-openapi.yml
+    operations: 14
+    gated: false
+    note: >-
+      Written by API Evangelist from Ajaib's published reference; Ajaib
+      publishes no OpenAPI. The live API host api.ajaib.co.id returns 403 to an
+      unattended client (Cloudflare bot challenge).
+  graphql:
+    endpoint: null
+  mcp:
+    url: null
+    status: candidate
+  websocket:
+    endpoint: wss://stream.ajaib.co.id:443
+    gated: true
+    note: >-
+      Advertised in the overview but no channels, subscription protocol or
+      message schemas are published, so nothing can be crosswalked to it.
+crosswalk:
+- tool: get_server_time
+  category: market-info
+  rest: [getServerTime]
+  binding: rest
+  confidence: high
+- tool: get_exchange_info
+  category: market-info
+  rest: [getExchangeInfo]
+  binding: rest
+  confidence: high
+- tool: get_order_book
+  category: market-info
+  rest: [getDepth]
+  binding: rest
+  confidence: high
+- tool: get_price
+  category: market-info
+  rest: [getPrice]
+  binding: rest
+  confidence: high
+- tool: get_portfolio
+  category: wallet
+  rest: [getPortfolio]
+  binding: rest
+  confidence: high
+- tool: list_trades
+  category: spot-trading
+  rest: [getTrades]
+  binding: rest
+  confidence: high
+- tool: get_order
+  category: spot-trading
+  rest: [getOrder]
+  binding: rest
+  confidence: high
+- tool: list_open_orders
+  category: spot-trading
+  rest: [getOpenOrders]
+  binding: rest
+  confidence: high
+- tool: create_order
+  category: spot-trading
+  rest: [createOrder]
+  binding: rest
+  confidence: high
+  note: LIMIT and LIMIT_MAKER only; MARKET is in the type enum but not accepted here.
+- tool: create_batch_orders
+  category: spot-trading
+  rest: [createBatchOrders]
+  binding: rest
+  confidence: high
+- tool: create_self_trading_order
+  category: spot-trading
+  rest: [createSelfTradingOrder]
+  binding: rest
+  confidence: high
+  note: Available only to internal market-maker exchange clients.
+- tool: cancel_order
+  category: spot-trading
+  rest: [cancelOrder]
+  binding: rest
+  confidence: high
+- tool: cancel_batch_orders
+  category: spot-trading
+  rest: [cancelBatchOrders]
+  binding: rest
+  confidence: high
+- tool: cancel_all_open_orders
+  category: spot-trading
+  rest: [cancelAllOpenOrders]
+  binding: rest
+  confidence: high
+mcp_only: []
+rest_only: []
+divergences:
+- surface: websocket
+  detail: >-
+    The streaming surface has no documented contract at all, so real-time
+    market data and order updates are reachable by a human reading the overview
+    but not by any machine. This is the one genuine surface divergence.
+- surface: docs
+  detail: >-
+    A candlestick/kline time-interval enumeration is published in Definitions
+    but no kline endpoint exists in the reference.
+coverage:
+  tools_named: 14
+  tools_bound: 14
+  mcp_only: 0
+  rest_operations_total: 14
+  rest_operations_with_tool: 14

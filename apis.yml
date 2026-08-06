@@ -1,18 +1,88 @@
 aid: ajaib
 name: Ajaib
-description: 'Ajaib is a company surfaced via the API Evangelist harvest backlog (source: secondary-market)
-  and added to the network as a stub for full-pipeline profiling.'
+description: >-
+  Ajaib is an Indonesian fintech and online brokerage founded in 2018 that gives
+  retail investors access to Indonesian stocks, mutual funds, bonds, US stocks
+  and crypto from a single mobile app. It operates PT Ajaib Sekuritas Asia for
+  equities and Ajaib Kripto for digital assets, and became Southeast Asia's
+  first investment unicorn in 2021. Its one public developer surface is the
+  Ajaib Coin Exchange API, a REST trading interface for the crypto venue,
+  documented on GitBook and organized into Market Info, Wallet and Spot Trading.
+  Access is not self-service: clients generate an ECDSASHA256 keypair, email the
+  public key to Ajaib, and sign every request with X-API-KEY, X-SIGNATURE and
+  X-TIMESTAMP headers. Ajaib publishes no OpenAPI, no SDKs and no status page.
+image: https://avatars.githubusercontent.com/u/45261753?v=4
 url: https://raw.githubusercontent.com/api-evangelist/ajaib/refs/heads/main/apis.yml
 x-type: company
 x-source: harvest:secondary-market
-x-tier: stub
-x-tier-reason: harvest
 specificationVersion: '0.20'
 created: '2026-08-06'
 modified: '2026-08-06'
 tags:
 - Company
-apis: []
+- Financial Services
+- Investing
+- Brokerage
+- Trading
+- Cryptocurrency
+- Crypto Exchange
+- Stocks
+- Mutual Funds
+- Fintech
+- Indonesia
+- Wealth Management
+apis:
+- aid: ajaib:coin-exchange
+  name: Ajaib Coin Exchange API
+  description: >-
+    REST trading API for the Ajaib Coin Exchange (Ajaib Kripto). Provides market
+    information (server time, exchange info, order book depth, latest price),
+    wallet portfolio balances, and spot trading (view, place, batch and cancel
+    orders and trades). All requests and responses are application/json;
+    authenticated calls carry an issued API key plus an ECDSASHA256 request
+    signature. A separate testnet base endpoint is published at
+    https://api.ajaib.tech.
+  humanURL: https://ajaib.gitbook.io/coin-exchange
+  baseURL: https://api.ajaib.co.id
+  image: https://avatars.githubusercontent.com/u/45261753?v=4
+  tags:
+  - Cryptocurrency
+  - Crypto Exchange
+  - Trading
+  - Spot Trading
+  - Market Data
+  - Wallet
+  properties:
+  - type: OpenAPI
+    url: openapi/ajaib-coin-exchange-openapi.yml
+  - type: Documentation
+    url: https://ajaib.gitbook.io/coin-exchange
+  - type: APIReference
+    url: https://ajaib.gitbook.io/coin-exchange/api-references/market-info
+  - type: GettingStarted
+    url: https://ajaib.gitbook.io/coin-exchange/getting-started/authentication
+  - type: Authentication
+    url: authentication/ajaib-authentication.yml
+  - type: ErrorCatalog
+    url: errors/ajaib-error-codes.yml
+  - type: Conventions
+    url: conventions/ajaib-conventions.yml
+  - type: Sandbox
+    url: sandbox/ajaib-sandbox.yml
+  - type: DataModel
+    url: data-model/ajaib-data-model.yml
+  - type: Lifecycle
+    url: lifecycle/ajaib-lifecycle.yml
+  - type: Conformance
+    url: conformance/ajaib-conformance.yml
+  - type: MCPServer
+    url: mcp/ajaib-mcp.yml
+  - type: ToolCrosswalk
+    url: mcp/ajaib-tool-crosswalk.yml
+  - type: Overlay
+    url: overlays/ajaib-coin-exchange-overlay.yaml
+  - type: AgentSkill
+    url: skills/_index.yml
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
@@ -20,4 +90,81 @@ maintainers:
   email: info@apis.io
 common:
 - type: Website
+  url: https://ajaib.co.id/
+- type: DeveloperPortal
+  url: https://ajaib.gitbook.io/coin-exchange
+- type: Documentation
+  url: https://ajaib.gitbook.io/coin-exchange
+- type: APIReference
+  url: https://ajaib.gitbook.io/coin-exchange/api-references/market-info
+- type: GettingStarted
+  url: https://ajaib.gitbook.io/coin-exchange/getting-started/authentication
+- type: GitHubOrganization
+  url: https://github.com/ajaibid
+- type: Blog
+  url: https://ajaib.co.id/belajar
+- type: Support
+  url: https://ajaib.co.id/pusat-bantuan
+- type: TermsOfService
+  url: https://ajaib.co.id/legal
+- type: PrivacyPolicy
+  url: https://ajaib.co.id/legal
+- type: Authentication
+  url: authentication/ajaib-authentication.yml
+- type: ErrorCatalog
+  url: errors/ajaib-error-codes.yml
+- type: Conventions
+  url: conventions/ajaib-conventions.yml
+- type: Sandbox
+  url: sandbox/ajaib-sandbox.yml
+- type: Lifecycle
+  url: lifecycle/ajaib-lifecycle.yml
+- type: Conformance
+  url: conformance/ajaib-conformance.yml
+- type: DataModel
+  url: data-model/ajaib-data-model.yml
+- type: WellKnown
+  url: well-known/ajaib-well-known.yml
+- type: LLMsTxt
+  url: llms/ajaib-llms.txt
+- type: MCPServer
+  url: mcp/ajaib-mcp.yml
+- type: ToolCrosswalk
+  url: mcp/ajaib-tool-crosswalk.yml
+- type: AgentSkill
+  url: skills/_index.yml
+- type: AgenticAccess
+  url: agentic-access/ajaib-agentic-access.yml
+- type: Overlay
+  url: overlays/ajaib-coin-exchange-overlay.yaml
+- type: Security
+  url: security/ajaib-vulnerability-disclosure.yml
+- type: VulnerabilityDisclosure
+  url: security/ajaib-vulnerability-disclosure.yml
+- type: DomainSecurity
+  url: security/ajaib-domain-security.yml
+- type: SecondaryMarketListing
   url: https://www.hiive.com/securities/ajaib-stock
+x-enrichment:
+  date: '2026-08-06'
+  status: enriched
+  artifacts_added: 17
+  pass: local-v1
+x-coverage:
+  state: covered
+  reason: null
+  detail: >-
+    Ajaib's public developer surface is the Ajaib Coin Exchange API, fully
+    documented on GitBook with a verbatim llms.txt; the API hosts themselves
+    (api.ajaib.co.id, api.ajaib.tech) return a Cloudflare 403 bot challenge on
+    every path, so no live spec probe or well-known read was possible there.
+  evidence:
+  - url: https://ajaib.gitbook.io/coin-exchange/llms.txt
+    status: 200
+  - url: https://ajaib.gitbook.io/coin-exchange/llms-full.txt
+    status: 200
+  - url: https://api.ajaib.co.id/openapi.json
+    status: 403
+  - url: https://ajaib.co.id/.well-known/agent-card.json
+    status: 404
+  checked: '2026-08-06'

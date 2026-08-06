@@ -1,0 +1,100 @@
+generated: '2026-08-06'
+method: searched
+source: https://ajaib.gitbook.io/coin-exchange/getting-started/errors
+docs: https://ajaib.gitbook.io/coin-exchange/getting-started/errors
+format: custom
+envelope:
+  media_type: application/json
+  shape: '{"error": "<enum>"}'
+  field: error
+  note: >-
+    Not RFC 9457 problem+json. Ajaib returns a flat JSON object with a single
+    `error` enum. The docs overview additionally refers to a `message`
+    parameter on 4xx bodies indicating the specific cause; only the `error`
+    field appears in the published examples.
+status_codes:
+  - status: 200
+    title: OK
+    description: >-
+      Everything worked as expected. May contain an optional body, documented
+      per endpoint.
+  - status: 400
+    title: Bad Request
+    description: The request was unacceptable, often due to a missing required parameter.
+  - status: 401
+    title: Unauthorized
+    description: No valid API key provided.
+  - status: 402
+    title: Request Failed
+    description: The parameters were valid but the request failed.
+  - status: 403
+    title: Forbidden
+    description: The API key doesn't have the permissions to perform the request.
+  - status: 404
+    title: Not Found
+    description: The requested resource doesn't exist.
+  - status: 409
+    title: Conflict
+    description: >-
+      The request conflicts with another request (perhaps due to using the same
+      idempotent key).
+  - status: 429
+    title: Too Many Requests
+    description: >-
+      Too many requests hit the API too quickly. Use an exponential backoff on
+      your request.
+  - status: 500
+    title: Server Error
+    description: Something went wrong on Ajaib's end.
+  - status: 502
+    title: Bad Gateway
+    description: Something went wrong on Ajaib's end.
+  - status: 503
+    title: Service Unavailable
+    description: Something went wrong on Ajaib's end.
+  - status: 504
+    title: Gateway Timeout
+    description: Something went wrong on Ajaib's end.
+errors:
+  - code: invalid_request
+    title: Invalid request
+    cause: The request has missing required or invalid parameters.
+    observed_status: [400]
+    source_operations: [createBatchOrders]
+  - code: invalid_client
+    title: Invalid authorization
+    cause: >-
+      Invalid authorization — the API key, signature or timestamp did not
+      validate.
+    observed_status: [401, 403]
+    source_operations:
+      - getDepth
+      - getPrice
+      - getOrder
+      - getOpenOrders
+      - cancelOrder
+      - cancelBatchOrders
+      - cancelAllOpenOrders
+      - createBatchOrders
+  - code: insufficient_wallet
+    title: Insufficient wallet
+    cause: Insufficient balance in the exchange client's wallet.
+    observed_status: [400, 401]
+    source_operations: [createOrder, createSelfTradingOrder, getPortfolio, createBatchOrders]
+  - code: order_already_closed
+    title: Order already closed
+    cause: >-
+      The order is no longer in an open state (NEW, OPEN, PARTIALLY_FILLED) so
+      the cancel instruction is rejected.
+    observed_status: [400]
+    source_operations: [cancelOrder]
+  - code: api_error
+    title: API error
+    cause: >-
+      Any other type of problem, e.g. a temporary problem with Ajaib's servers.
+    observed_status: [500, 502, 503, 504]
+remediation_guidance:
+  - on 429, apply exponential backoff
+  - >-
+    on invalid_client, re-check that X-TIMESTAMP is in unix milliseconds UTC and
+    that the signed payload string matches the exact concatenation rules

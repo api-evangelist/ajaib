@@ -1,0 +1,67 @@
+generated: '2026-08-06'
+method: searched
+source: https://ajaib.gitbook.io/coin-exchange/getting-started/authentication
+docs: https://ajaib.gitbook.io/coin-exchange/getting-started/authentication
+summary:
+  types: [apiKey, signed-request]
+  api_key_in: [header]
+  oauth2_flows: []
+  note: >-
+    Ajaib Coin Exchange uses an issued API key plus a per-request ECDSA-SHA256
+    request signature. There is no OAuth 2.0 or OpenID Connect surface, so no
+    scopes/ artifact is emitted.
+provisioning:
+  self_service: false
+  process: >-
+    The client generates an ECDSASHA256 keypair, then emails the public key to
+    tech@ajaib.co.id. Ajaib returns an auto-generated API key bound to that
+    public key and to the client's identity as an exchange client.
+  contact: tech@ajaib.co.id
+schemes:
+  - name: ApiKeyAuth
+    type: apiKey
+    in: header
+    parameter: X-API-KEY
+    description: The API key generated for the exchange client by Ajaib.
+    sources: [openapi/ajaib-coin-exchange-openapi.yml]
+  - name: SignatureAuth
+    type: apiKey
+    in: header
+    parameter: X-SIGNATURE
+    algorithm: ECDSASHA256
+    description: >-
+      Signature over the concatenation of timestamp + method + requestPath +
+      queryParam + requestBody, signed with the client's private key.
+    sources: [openapi/ajaib-coin-exchange-openapi.yml]
+  - name: TimestampAuth
+    type: apiKey
+    in: header
+    parameter: X-TIMESTAMP
+    description: Unix timestamp in milliseconds, UTC timezone.
+    sources: [openapi/ajaib-coin-exchange-openapi.yml]
+signing:
+  algorithm: ECDSASHA256
+  payload: timestamp + method + requestPath + queryParam + requestBody
+  rules:
+    - method must be uppercase (GET, POST, PUT, DELETE)
+    - requestPath must have a leading slash and no trailing slash, e.g. /api/v1/order
+    - queryParam is all query parameters joined with '&', no spaces or newlines
+    - requestBody is the JSON body with all newlines and spaces removed
+    - the timestamp signed must equal the X-TIMESTAMP header value
+  failure: HTTP 403 with error "invalid_client"
+public_operations:
+  - getServerTime
+  - getExchangeInfo
+authenticated_operations:
+  - getDepth
+  - getPrice
+  - getPortfolio
+  - getTrades
+  - getOrder
+  - getOpenOrders
+  - createOrder
+  - createSelfTradingOrder
+  - createBatchOrders
+  - cancelOrder
+  - cancelBatchOrders
+  - cancelAllOpenOrders

@@ -1,0 +1,88 @@
+generated: '2026-08-06'
+method: probed
+source: https://ajaib.co.id/.well-known/
+note: >-
+  No /.well-known/ discovery documents are published on any Ajaib host. The
+  ajaib.co.id origin (Next.js) answers every /.well-known/* path with a real
+  HTTP 404 page, so these are honest misses rather than an SPA catch-all. The
+  API hosts api.ajaib.co.id and api.ajaib.tech sit behind a Cloudflare bot
+  challenge that returns 403 to an unattended client on every path, including
+  /.well-known/*, so their discovery surface could not be read.
+hosts:
+  - host: https://ajaib.co.id
+    reachable: true
+    documents:
+      - path: /.well-known/security.txt
+        status: 404
+      - path: /.well-known/openid-configuration
+        status: 404
+      - path: /.well-known/oauth-authorization-server
+        status: 404
+      - path: /.well-known/api-catalog
+        status: 404
+      - path: /.well-known/ai-plugin.json
+        status: 404
+      - path: /.well-known/agent-card.json
+        status: 404
+      - path: /.well-known/agent.json
+        status: 404
+      - path: /robots.txt
+        status: 200
+        note: >-
+          Allows all user agents; disallows /forex, /indeks, /komoditas.
+          Advertises https://ajaib.co.id/sitemap.xml
+      - path: /llms.txt
+        status: 404
+  - host: https://kripto.ajaib.co.id
+    reachable: true
+    documents:
+      - path: /.well-known/security.txt
+        status: 404
+        note: redirects to ajaib.co.id
+      - path: /.well-known/agent-card.json
+        status: 404
+      - path: /.well-known/agent.json
+        status: 404
+  - host: https://alpha.ajaib.co.id
+    reachable: true
+    documents:
+      - path: /.well-known/security.txt
+        status: 404
+      - path: /.well-known/agent-card.json
+        status: 404
+  - host: https://api.ajaib.co.id
+    reachable: false
+    blocked_by: cloudflare-bot-challenge
+    documents:
+      - path: /.well-known/security.txt
+        status: 403
+      - path: /openapi.json
+        status: 403
+      - path: /swagger.json
+        status: 403
+      - path: /docs
+        status: 403
+      - path: /api-docs
+        status: 403
+  - host: https://api.ajaib.tech
+    reachable: false
+    blocked_by: cloudflare-bot-challenge
+    documents:
+      - path: /.well-known/agent-card.json
+        status: 403
+      - path: /.well-known/agent.json
+        status: 403
+      - path: /openapi.json
+        status: 403
+  - host: https://ajaib.gitbook.io
+    reachable: true
+    documents:
+      - path: /coin-exchange/llms.txt
+        status: 200
+        file: ../llms/ajaib-llms.txt
+      - path: /coin-exchange/openapi.json
+        status: 404
+      - path: /.well-known/agent-card.json
+        status: 404
+      - path: /.well-known/agent.json
+        status: 404

@@ -1,0 +1,842 @@
+openapi: 3.1.0
+info:
+  title: Ajaib Coin Exchange API
+  version: v1
+  description: >-
+    RESTful API for the Ajaib Coin Exchange (Ajaib Kripto), the crypto trading
+    venue operated by Ajaib in Indonesia. The API is organized into three
+    surfaces: Market Info (general exchange information), Wallet (portfolio
+    balances) and Spot Trading (view, place and cancel orders and trades).
+    All requests and responses use the `application/json` content type and
+    request URLs are case-sensitive and must be lowercase.
+  contact:
+    name: Ajaib Coin Exchange
+    email: tech@ajaib.co.id
+    url: https://ajaib.gitbook.io/coin-exchange
+  x-provenance:
+    method: generated
+    generated: '2026-08-06'
+    note: >-
+      This OpenAPI document was written by API Evangelist from Ajaib's own
+      published API reference. Ajaib does not publish an OpenAPI document.
+      Every path, method, parameter, response field and example below is taken
+      verbatim from the pages listed in x-sources; nothing is invented.
+    x-sources:
+      - https://ajaib.gitbook.io/coin-exchange/overview
+      - https://ajaib.gitbook.io/coin-exchange/getting-started/authentication
+      - https://ajaib.gitbook.io/coin-exchange/getting-started/definitions
+      - https://ajaib.gitbook.io/coin-exchange/getting-started/errors
+      - https://ajaib.gitbook.io/coin-exchange/llms-full.txt
+servers:
+  - url: https://api.ajaib.co.id
+    description: Mainnet (production) RESTful API
+  - url: https://api.ajaib.tech
+    description: Testnet RESTful API
+tags:
+  - name: Market Info
+    description: Retrieve general exchange information.
+  - name: Wallet
+    description: Check funds and assets held by the exchange client.
+  - name: Spot Trading
+    description: View, place and cancel spot orders and trades.
+paths:
+  /coin/internal/v1/public/time:
+    get:
+      tags: [Market Info]
+      operationId: getServerTime
+      summary: Retrieve server time
+      description: >-
+        Retrieve the server's timestamp. Format is unix timestamp milliseconds
+        with timezone UTC. This endpoint can also be used to test server-client
+        connectivity.
+      security: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerTime'
+              example:
+                timezone: UTC
+                timestamp: 1714440597515
+  /coin/internal/v1/public/exchange-info:
+    get:
+      tags: [Market Info]
+      operationId: getExchangeInfo
+      summary: Retrieve information of the exchange
+      description: Retrieves exchange information on the supported trading pairs.
+      security: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ExchangeInfo'
+              example:
+                - symbol: BTC_USDT
+                  base_asset: BTC
+                  base_precision: 8
+                  quote_asset: USDT
+                  quote_tick: 0.01
+  /coin/internal/v1/depth:
+    get:
+      tags: [Market Info]
+      operationId: getDepth
+      summary: Retrieve order book depth
+      description: Retrieves the order book data of a single trading pair.
+      parameters:
+        - name: symbol
+          in: query
+          required: true
+          description: Trading pair symbol.
+          schema:
+            type: string
+            examples: [BTC_USDT]
+        - name: limit
+          in: query
+          required: false
+          description: Number of levels to return. Default 1, max 100.
+          schema:
+            type: integer
+            default: 1
+            maximum: 100
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Depth'
+              example:
+                bids:
+                  - price: 38.25
+                    volume: 0.25123
+                asks:
+                  - price: 38.25
+                    volume: 0.25123
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /coin/internal/v1/price:
+    get:
+      tags: [Market Info]
+      operationId: getPrice
+      summary: Retrieve latest price of a trading pair
+      description: >-
+        Retrieves the latest price of its trading pair symbol. The quote value
+        varies per trading pair (it is not always USDT).
+      parameters:
+        - name: symbol
+          in: query
+          required: true
+          description: Trading pair symbol.
+          schema:
+            type: string
+            examples: [BTC_USDT]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Price'
+              example:
+                symbol: BTC_USDT
+                price: 65256.11
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /coin/internal/v1/portfolio:
+    get:
+      tags: [Wallet]
+      operationId: getPortfolio
+      summary: Retrieve portfolio of a trading account
+      description: >-
+        Retrieves the aggregated portfolio of the exchange client. Sub-accounts
+        are not supported.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PortfolioAsset'
+              example:
+                - asset: BTC
+                  free: 0
+                  locked: 0
+                - asset: IDR
+                  free: 15000
+                  locked: 0
+                  equivalent:
+                    asset: USDT
+                    free: 1
+                    locked: 0
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /coin/internal/v1/trades:
+    get:
+      tags: [Spot Trading]
+      operationId: getTrades
+      summary: Retrieve all trades under the exchange client
+      description: >-
+        Retrieves all trades belonging to the exchange client's trading account.
+        Sub-accounts are not supported.
+      parameters:
+        - name: symbol
+          in: query
+          required: true
+          description: Symbol of trading pair.
+          schema:
+            type: string
+            examples: [BTC_USDT]
+        - name: from_trade_id
+          in: query
+          required: false
+          description: >-
+            trade_id to fetch from (exclusive). Returns the most recent trades
+            by default.
+          schema:
+            type: integer
+            format: int64
+        - name: limit
+          in: query
+          required: false
+          description: Default 100, max 1000.
+          schema:
+            type: integer
+            default: 100
+            maximum: 1000
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Trade'
+              example:
+                - symbol: BTC_USDT
+                  order_id: 100234
+                  order_side: BUY
+                  trade_id: 28457
+                  price: 4.00
+                  quantity: 2.00
+                  timestamp: 1499865549590
+                  is_maker: true
+                  is_self_trade: true
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /coin/internal/v1/order:
+    get:
+      tags: [Spot Trading]
+      operationId: getOrder
+      summary: Retrieve an order under the exchange client
+      description: >-
+        Retrieves a single order, based on the input search parameters,
+        belonging to the exchange client's trading account.
+      parameters:
+        - name: order_id
+          in: query
+          required: true
+          description: The order id.
+          schema:
+            type: integer
+            format: int64
+        - name: symbol
+          in: query
+          required: true
+          description: Symbol of trading pair.
+          schema:
+            type: string
+            examples: [BTC_USDT]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+              example:
+                order_id: 123
+                side: BUY
+                status: OPEN
+                symbol: BTC_USDT
+                type: LIMIT
+                price: 27074.16
+                quantity: 0.0001
+                avg_price: 27074.16
+                executed_quantity: 0.0001
+                created_at: 1722844008183
+                updated_at: 1722844008183
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    post:
+      tags: [Spot Trading]
+      operationId: createOrder
+      summary: Create a new order under the exchange client
+      description: >-
+        Creates a new spot trading order belonging to the exchange client's
+        trading account. A successful response means the exchange has received
+        the order instructions to act upon; it is no guarantee that all
+        instructions have been processed successfully.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewOrderRequest'
+            example:
+              side: BUY
+              symbol: BTC_USDT
+              type: LIMIT
+              price: 27074.16
+              quantity: 0.0001
+      responses:
+        '200':
+          description: Order successfully received
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NewOrderResponse'
+              example:
+                order_id: 12345678
+                status: NEW
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    delete:
+      tags: [Spot Trading]
+      operationId: cancelOrder
+      summary: Cancel an order under the exchange client
+      description: >-
+        Cancels or withdraws an open order belonging to the exchange client's
+        trading account. The instruction is valid only for orders with status
+        NEW, OPEN or PARTIALLY_FILLED; otherwise it is rejected automatically.
+      parameters:
+        - name: order_id
+          in: query
+          required: true
+          description: Unique identifier generated by Ajaib exchange for the order.
+          schema:
+            type: integer
+            format: int64
+        - name: symbol
+          in: query
+          required: true
+          description: Symbol of trading pair.
+          schema:
+            type: string
+            examples: [BTC_USDT]
+      responses:
+        '200':
+          description: Cancel instruction sent
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    examples: [CANCEL_SENT]
+              example:
+                status: CANCEL_SENT
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /coin/internal/v1/order/open:
+    get:
+      tags: [Spot Trading]
+      operationId: getOpenOrders
+      summary: Retrieve all open orders under the exchange client
+      description: >-
+        Retrieves all open orders belonging to the exchange client's trading
+        account. Open orders can only have the statuses NEW, OPEN or
+        PARTIAL_FILLED.
+      parameters:
+        - name: symbol
+          in: query
+          required: true
+          description: Symbol of trading pair.
+          schema:
+            type: string
+            examples: [BTC_USDT]
+        - name: from_order_id
+          in: query
+          required: false
+          description: >-
+            order_id to fetch from (inclusive of the starting id). Returns the
+            most recent orders by default in descending order.
+          schema:
+            type: integer
+            format: int64
+        - name: limit
+          in: query
+          required: false
+          description: Default 100.
+          schema:
+            type: integer
+            default: 100
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Order'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    delete:
+      tags: [Spot Trading]
+      operationId: cancelAllOpenOrders
+      summary: Cancel all open orders under the exchange client
+      description: >-
+        Cancels or withdraws all open orders belonging to the exchange client's
+        trading account for a trading pair.
+      parameters:
+        - name: symbol
+          in: query
+          required: true
+          description: Symbol of trading pair.
+          schema:
+            type: string
+            examples: [BTC_USDT]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BatchCancelResult'
+              example:
+                success: [123456, 789012, 543210]
+                fail: []
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /coin/internal/v1/order/self-trading:
+    post:
+      tags: [Spot Trading]
+      operationId: createSelfTradingOrder
+      summary: Create a new self-trading order
+      description: >-
+        Creates a new "self-trading" order. Only available for use via an
+        internal market maker exchange client.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SelfTradingOrderRequest'
+            example:
+              symbol: BTC_USDT
+              price: 27074.16
+              quantity: 0.0001
+      responses:
+        '200':
+          description: Order successfully received
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  buy_order_id:
+                    type: integer
+                    format: int64
+                  sell_order_id:
+                    type: integer
+                    format: int64
+              example:
+                buy_order_id: 12345678
+                sell_order_id: 12345679
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /coin/internal/v1/order/batch:
+    post:
+      tags: [Spot Trading]
+      operationId: createBatchOrders
+      summary: Create multiple new orders from a single request
+      description: >-
+        Creates a list of new orders belonging to the exchange client's trading
+        account, allowing a batch of order instructions to be submitted at one
+        go. A successful response means the exchange has received the
+        instructions; it is no guarantee all have been processed successfully.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BatchNewOrdersRequest'
+            example:
+              symbol: BTC_USDT
+              orders:
+                - side: BUY
+                  type: LIMIT
+                  price: 1.99
+                  quantity: 95.24
+                - side: BUY
+                  type: LIMIT
+                  price: 1.98
+                  quantity: 154.24
+      responses:
+        '200':
+          description: Orders successfully received
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/NewOrderResponse'
+              example:
+                - order_id: 123
+                  status: NEW
+                - order_id: 456
+                  status: NEW
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    delete:
+      tags: [Spot Trading]
+      operationId: cancelBatchOrders
+      summary: Cancel multiple orders under the exchange client
+      description: >-
+        Cancels or withdraws a list of orders belonging to the exchange client's
+        trading account in a single request.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BatchCancelRequest'
+            example:
+              order_ids: [123456, 789012, 543210]
+              symbol: BTC_IDR
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BatchCancelResult'
+              example:
+                success: [123456, 789012]
+                fail: [543210]
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-KEY
+      description: The API key generated for the exchange client by Ajaib.
+    SignatureAuth:
+      type: apiKey
+      in: header
+      name: X-SIGNATURE
+      description: >-
+        ECDSASHA256 signature over the concatenation of
+        timestamp + method + requestPath + queryParam + requestBody, signed with
+        the client's private key.
+    TimestampAuth:
+      type: apiKey
+      in: header
+      name: X-TIMESTAMP
+      description: Unix timestamp in milliseconds, UTC timezone.
+  responses:
+    BadRequest:
+      description: >-
+        Bad Request. The request was unacceptable, often due to a missing
+        required parameter.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: invalid_request
+    Unauthorized:
+      description: Unauthorized. No valid API key provided.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: invalid_client
+  schemas:
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error enum indicating the specific cause.
+          enum:
+            - invalid_request
+            - invalid_client
+            - insufficient_wallet
+            - order_already_closed
+            - api_error
+    ServerTime:
+      type: object
+      properties:
+        timezone:
+          type: string
+          description: Server time's timezone.
+        timestamp:
+          type: integer
+          format: int64
+          description: Server time in unix epoch milliseconds.
+    ExchangeInfo:
+      type: object
+      properties:
+        symbol:
+          type: string
+          description: The trading pair symbol.
+        base_asset:
+          type: string
+          description: The base asset of the trading pair.
+        base_precision:
+          type: integer
+          description: Number of precision (decimal points) supported.
+        quote_asset:
+          type: string
+          description: The quote asset of the trading pair.
+        quote_tick:
+          type: number
+          description: The minimum tick size supported.
+    DepthLevel:
+      type: object
+      properties:
+        price:
+          type: number
+        volume:
+          type: number
+    Depth:
+      type: object
+      properties:
+        bids:
+          type: array
+          items:
+            $ref: '#/components/schemas/DepthLevel'
+        asks:
+          type: array
+          items:
+            $ref: '#/components/schemas/DepthLevel'
+    Price:
+      type: object
+      properties:
+        symbol:
+          type: string
+        price:
+          type: number
+          description: The latest quote value.
+    EquivalentAsset:
+      type: object
+      properties:
+        asset:
+          type: string
+          description: The name of the asset.
+        free:
+          type: number
+          description: The total quantity of free assets.
+        locked:
+          type: number
+          description: The total quantity of locked assets (used for open orders).
+    PortfolioAsset:
+      type: object
+      properties:
+        asset:
+          type: string
+          description: The name of the asset.
+        free:
+          type: number
+          description: The total quantity of free assets.
+        locked:
+          type: number
+          description: The total quantity of locked assets (used for open orders).
+        equivalent:
+          $ref: '#/components/schemas/EquivalentAsset'
+    Trade:
+      type: object
+      properties:
+        symbol:
+          type: string
+        order_id:
+          type: integer
+          format: int64
+          description: >-
+            Unique identifier generated by Ajaib exchange for all orders
+            submitted successfully.
+        order_side:
+          $ref: '#/components/schemas/OrderSide'
+        trade_id:
+          type: integer
+          format: int64
+          description: >-
+            Unique identifier generated by Ajaib exchange for all trades
+            generated or matched.
+        price:
+          type: number
+        quantity:
+          type: number
+        timestamp:
+          type: integer
+          format: int64
+          description: Unix epoch milliseconds, UTC.
+        is_maker:
+          type: boolean
+        is_self_trade:
+          type: boolean
+    OrderSide:
+      type: string
+      description: >-
+        BUY takes away liquidity from the order book (taker); SELL supplies
+        liquidity to the order book (maker).
+      enum: [BUY, SELL]
+    OrderType:
+      type: string
+      description: >-
+        LIMIT, MARKET, or LIMIT_MAKER (if the order is a taker, it will be
+        expired).
+      enum: [LIMIT, MARKET, LIMIT_MAKER]
+    OrderStatus:
+      type: string
+      enum:
+        - NEW
+        - OPEN
+        - PARTIAL_FILLED
+        - FILLED
+        - PARTIAL_CANCELLED
+        - CANCELLED
+        - REJECTED
+        - EXPIRED
+        - EXPIRED_IN_MATCH
+        - PARTIALLY_EXPIRED_IN_MATCH
+    Order:
+      type: object
+      properties:
+        order_id:
+          type: integer
+          format: int64
+        side:
+          $ref: '#/components/schemas/OrderSide'
+        status:
+          $ref: '#/components/schemas/OrderStatus'
+        symbol:
+          type: string
+        type:
+          $ref: '#/components/schemas/OrderType'
+        price:
+          type: number
+        quantity:
+          type: number
+        avg_price:
+          type: number
+          description: >-
+            Average matched or executed price of trades under the order. Returns
+            0 if no trade or match.
+        executed_quantity:
+          type: number
+          description: >-
+            Total order quantity already matched or executed. Always less than
+            or equal to quantity.
+        created_at:
+          type: integer
+          format: int64
+        updated_at:
+          type: integer
+          format: int64
+    NewOrderRequest:
+      type: object
+      required: [side, symbol, type, price, quantity]
+      properties:
+        side:
+          $ref: '#/components/schemas/OrderSide'
+        symbol:
+          type: string
+        type:
+          type: string
+          description: Only LIMIT and LIMIT_MAKER are allowed on this endpoint.
+          enum: [LIMIT, LIMIT_MAKER]
+        price:
+          type: number
+        quantity:
+          type: number
+    NewOrderResponse:
+      type: object
+      properties:
+        order_id:
+          type: integer
+          format: int64
+        status:
+          $ref: '#/components/schemas/OrderStatus'
+    SelfTradingOrderRequest:
+      type: object
+      required: [symbol, price, quantity]
+      properties:
+        symbol:
+          type: string
+        price:
+          type: number
+        quantity:
+          type: number
+    BatchOrderItem:
+      type: object
+      required: [side, type, price, quantity]
+      properties:
+        side:
+          $ref: '#/components/schemas/OrderSide'
+        type:
+          $ref: '#/components/schemas/OrderType'
+        price:
+          type: number
+        quantity:
+          type: number
+    BatchNewOrdersRequest:
+      type: object
+      required: [symbol, orders]
+      properties:
+        symbol:
+          type: string
+        orders:
+          type: array
+          items:
+            $ref: '#/components/schemas/BatchOrderItem'
+    BatchCancelRequest:
+      type: object
+      required: [order_ids, symbol]
+      properties:
+        order_ids:
+          type: array
+          items:
+            type: integer
+            format: int64
+        symbol:
+          type: string
+    BatchCancelResult:
+      type: object
+      properties:
+        success:
+          type: array
+          description: List of order ids that were successfully cancelled.
+          items:
+            type: integer
+            format: int64
+        fail:
+          type: array
+          description: List of order ids that failed to cancel.
+          items:
+            type: integer
+            format: int64
+security:
+  - ApiKeyAuth: []
+    SignatureAuth: []
+    TimestampAuth: []

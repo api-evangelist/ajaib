@@ -1,0 +1,44 @@
+generated: '2026-08-06'
+method: searched
+source: https://ajaib.gitbook.io/coin-exchange/overview
+docs: https://ajaib.gitbook.io/coin-exchange
+environments:
+  - name: mainnet
+    kind: production
+    rest: https://api.ajaib.co.id
+    websocket: wss://stream.ajaib.co.id:443
+  - name: testnet
+    kind: sandbox
+    rest: https://api.ajaib.tech
+    websocket: null
+    note: >-
+      Ajaib publishes a separate testnet REST base endpoint. No testnet
+      websocket endpoint is published.
+separation:
+  mechanism: separate-host
+  note: >-
+    Test and live are separated by hostname (api.ajaib.tech vs
+    api.ajaib.co.id), not by a key prefix or a mode flag. The same
+    X-API-KEY / X-SIGNATURE / X-TIMESTAMP scheme applies to both.
+credentials:
+  self_service: false
+  process: >-
+    API keys for either environment are issued by Ajaib after the client emails
+    its ECDSASHA256 public key to tech@ajaib.co.id. There is no published
+    self-service key issuance, and no publicly published test API key.
+test_values:
+  published: false
+  note: >-
+    Ajaib publishes no magic test values, test asset balances, or seeded test
+    accounts. The documented trading-pair enum (BTC_USDT) and the response
+    examples are illustrative only.
+test_clock: null
+fixtures: null
+gaps:
+  - No self-service testnet signup or key issuance.
+  - No published testnet seed balances or faucet.
+  - No testnet websocket endpoint.
+x-evidence:
+  fetched: '2026-08-06'
+  url: https://ajaib.gitbook.io/coin-exchange/llms-full.txt
+  http_status: 200

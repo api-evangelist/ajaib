@@ -1,0 +1,43 @@
+generated: '2026-08-06'
+method: generated
+source: openapi/ajaib-coin-exchange-openapi.yml
+api: openapi/ajaib-coin-exchange-openapi.yml
+note: >-
+  Ajaib publishes no AGENTS.md or skill files. These were written by API
+  Evangelist and every step is grounded in an operationId that exists verbatim
+  in the OpenAPI in this repo.
+skills:
+- file: ajaib-signed-request.md
+  name: Sign an Ajaib Coin Exchange request
+  description: >-
+    Build and sign an authenticated request using the issued API key and an
+    ECDSASHA256 request signature. Prerequisite for the other skills.
+  api: openapi/ajaib-coin-exchange-openapi.yml
+  operations: [getServerTime, getExchangeInfo]
+- file: ajaib-place-and-track-order.md
+  name: Place a spot order and track it to a terminal state
+  description: >-
+    Check the book, place a LIMIT order, and follow it to a terminal status
+    without duplicating it.
+  api: openapi/ajaib-coin-exchange-openapi.yml
+  operations:
+  - getExchangeInfo
+  - getDepth
+  - getPrice
+  - getPortfolio
+  - createOrder
+  - getOrder
+  - getTrades
+- file: ajaib-manage-open-orders.md
+  name: Quote a book in batch and unwind it safely
+  description: >-
+    Place a ladder of orders in one request, then cancel selectively or flatten
+    the pair, handling partial-success responses correctly.
+  api: openapi/ajaib-coin-exchange-openapi.yml
+  operations:
+  - getExchangeInfo
+  - getOpenOrders
+  - createBatchOrders
+  - cancelOrder
+  - cancelBatchOrders
+  - cancelAllOpenOrders

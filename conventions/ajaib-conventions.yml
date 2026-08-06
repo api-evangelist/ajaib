@@ -1,0 +1,83 @@
+generated: '2026-08-06'
+method: searched
+source: https://ajaib.gitbook.io/coin-exchange/overview
+docs: https://ajaib.gitbook.io/coin-exchange
+api: openapi/ajaib-coin-exchange-openapi.yml
+media_type:
+  request: application/json
+  response: application/json
+  note: All requests and responses are application/json content-type.
+url_conventions:
+  case_sensitive: true
+  rule: Request URLs must be lowercase as URLs are case-sensitive.
+  path_prefix: /coin/internal/v1
+  public_prefix: /coin/internal/v1/public
+authentication:
+  style: api-key-plus-signed-request
+  headers: [X-API-KEY, X-SIGNATURE, X-TIMESTAMP]
+  see: authentication/ajaib-authentication.yml
+idempotency:
+  supported: undocumented
+  evidence: >-
+    The published response-code table describes HTTP 409 Conflict as "the
+    request conflicts with another request (perhaps due to using the same
+    idempotent key)", but no idempotency-key header or request parameter is
+    documented on any endpoint, and no endpoint declares one in its parameters.
+  gap: >-
+    Ajaib should document the idempotency key header name, its scope and its
+    retention window. Order-creation endpoints (createOrder,
+    createBatchOrders, createSelfTradingOrder) are exactly the operations an
+    agent must be able to safely retry.
+pagination:
+  style: cursor-by-id
+  operations:
+    - operation: getTrades
+      cursor_param: from_trade_id
+      exclusive: true
+      limit_param: limit
+      limit_default: 100
+      limit_max: 1000
+      order: most recent first
+    - operation: getOpenOrders
+      cursor_param: from_order_id
+      exclusive: false
+      limit_param: limit
+      limit_default: 100
+      order: descending, inclusive of the starting id
+    - operation: getDepth
+      limit_param: limit
+      limit_default: 1
+      limit_max: 100
+  response_envelope: bare array (no wrapper, no next-cursor field)
+versioning:
+  scheme: uri-path
+  current: v1
+  see: lifecycle/ajaib-lifecycle.yml
+error_envelope:
+  shape: '{"error": "<enum>"}'
+  see: errors/ajaib-error-codes.yml
+rate_limiting:
+  documented_headers: []
+  signal: HTTP 429 Too Many Requests
+  guidance: Use an exponential backoff on your request.
+  gap: >-
+    No RateLimit/X-RateLimit response headers and no published quota are
+    documented, so a client cannot know its budget before it is throttled.
+request_tracing:
+  request_id_header: none documented
+timestamps:
+  format: unix epoch milliseconds
+  timezone: UTC
+  fields: [timestamp, created_at, updated_at]
+async_surface:
+  websocket: wss://stream.ajaib.co.id:443
+  note: >-
+    A websocket base endpoint is advertised in the overview, but no channels,
+    subscription protocol or message schemas are published, so no AsyncAPI
+    document is emitted.
+partial_success:
+  note: >-
+    Batch operations return per-item outcomes rather than failing atomically.
+    createBatchOrders returns an array of order results; cancelBatchOrders and
+    cancelAllOpenOrders return {success: [...], fail: [...]}. A 200 on an order
+    write means the exchange received the instruction, not that it executed.

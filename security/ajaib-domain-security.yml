@@ -1,0 +1,51 @@
+generated: '2026-08-06'
+method: probed
+source: live DNS/TLS/HTTP probes of apis.yml + OpenAPI hosts
+hosts:
+- host: ajaib.co.id
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Jan  3 23:59:59 2027 GMT
+  hsts: true
+  hsts_max_age: 31536000
+  note: >-
+    HSTS is served but the automated probe recorded null because the origin
+    answers an unattended client with a Cloudflare 403 bot challenge. Confirmed
+    by a browser-UA HEAD on 2026-08-06: strict-transport-security: max-age=31536000
+- host: ajaib.gitbook.io
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Oct 15 19:03:12 2026 GMT
+  hsts: true
+  hsts_max_age: 31536000
+- host: api.ajaib.co.id
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Jan  3 23:59:59 2027 GMT
+  hsts: true
+  hsts_max_age: 31536000
+  note: >-
+    Same as ajaib.co.id: HSTS confirmed by browser-UA HEAD on 2026-08-06; the
+    host is behind a Cloudflare bot challenge (403 on every path).
+domains:
+- domain: ajaib.co.id
+  dnssec: true
+  caa: []
+  spf: true
+  dmarc: true
+  dmarc_policy: none
+- domain: gitbook.io
+  dnssec: false
+  caa: []
+  spf: true
+  dmarc: true
+  dmarc_policy: quarantine
+x-notes:
+  - >-
+    gitbook.io is GitBook's shared documentation host, not a domain Ajaib
+    controls; its DNSSEC/SPF/DMARC values describe GitBook, not Ajaib.
+  - >-
+    ajaib.co.id publishes DMARC with p=none, which requests no enforcement
+    action on failing mail. For a licensed brokerage this is the weakest of the
+    three DMARC policies.
+  - No CAA records are published for ajaib.co.id.
