@@ -32,29 +32,16 @@ tags:
 - Indonesia
 - Wealth Management
 apis:
-- aid: ajaib:coin-exchange
-  name: Ajaib Coin Exchange API
-  description: >-
-    REST trading API for the Ajaib Coin Exchange (Ajaib Kripto). Provides market
-    information (server time, exchange info, order book depth, latest price),
-    wallet portfolio balances, and spot trading (view, place, batch and cancel
-    orders and trades). All requests and responses are application/json;
-    authenticated calls carry an issued API key plus an ECDSASHA256 request
-    signature. A separate testnet base endpoint is published at
-    https://api.ajaib.tech.
+- aid: ajaib:ajaib-market-info-api
+  name: Ajaib Market Info API
+  description: Retrieve general exchange information.
   humanURL: https://ajaib.gitbook.io/coin-exchange
   baseURL: https://api.ajaib.co.id
-  image: https://avatars.githubusercontent.com/u/45261753?v=4
   tags:
-  - Cryptocurrency
-  - Crypto Exchange
-  - Trading
-  - Spot Trading
-  - Market Data
-  - Wallet
+  - Market Info
   properties:
   - type: OpenAPI
-    url: openapi/ajaib-coin-exchange-openapi.yml
+    url: openapi/ajaib-market-info-api-openapi.yml
   - type: Documentation
     url: https://ajaib.gitbook.io/coin-exchange
   - type: APIReference
@@ -75,14 +62,72 @@ apis:
     url: lifecycle/ajaib-lifecycle.yml
   - type: Conformance
     url: conformance/ajaib-conformance.yml
-  - type: MCPServer
-    url: mcp/ajaib-mcp.yml
   - type: ToolCrosswalk
     url: mcp/ajaib-tool-crosswalk.yml
-  - type: Overlay
-    url: overlays/ajaib-coin-exchange-overlay.yaml
-  - type: AgentSkill
-    url: skills/_index.yml
+- aid: ajaib:ajaib-spot-trading-api
+  name: Ajaib Spot Trading API
+  description: View, place and cancel spot orders and trades.
+  humanURL: https://ajaib.gitbook.io/coin-exchange
+  baseURL: https://api.ajaib.co.id
+  tags:
+  - Spot Trading
+  properties:
+  - type: OpenAPI
+    url: openapi/ajaib-spot-trading-api-openapi.yml
+  - type: Documentation
+    url: https://ajaib.gitbook.io/coin-exchange
+  - type: APIReference
+    url: https://ajaib.gitbook.io/coin-exchange/api-references/market-info
+  - type: GettingStarted
+    url: https://ajaib.gitbook.io/coin-exchange/getting-started/authentication
+  - type: Authentication
+    url: authentication/ajaib-authentication.yml
+  - type: ErrorCatalog
+    url: errors/ajaib-error-codes.yml
+  - type: Conventions
+    url: conventions/ajaib-conventions.yml
+  - type: Sandbox
+    url: sandbox/ajaib-sandbox.yml
+  - type: DataModel
+    url: data-model/ajaib-data-model.yml
+  - type: Lifecycle
+    url: lifecycle/ajaib-lifecycle.yml
+  - type: Conformance
+    url: conformance/ajaib-conformance.yml
+  - type: ToolCrosswalk
+    url: mcp/ajaib-tool-crosswalk.yml
+- aid: ajaib:ajaib-wallet-api
+  name: Ajaib Wallet API
+  description: Check funds and assets held by the exchange client.
+  humanURL: https://ajaib.gitbook.io/coin-exchange
+  baseURL: https://api.ajaib.co.id
+  tags:
+  - Wallet
+  properties:
+  - type: OpenAPI
+    url: openapi/ajaib-wallet-api-openapi.yml
+  - type: Documentation
+    url: https://ajaib.gitbook.io/coin-exchange
+  - type: APIReference
+    url: https://ajaib.gitbook.io/coin-exchange/api-references/market-info
+  - type: GettingStarted
+    url: https://ajaib.gitbook.io/coin-exchange/getting-started/authentication
+  - type: Authentication
+    url: authentication/ajaib-authentication.yml
+  - type: ErrorCatalog
+    url: errors/ajaib-error-codes.yml
+  - type: Conventions
+    url: conventions/ajaib-conventions.yml
+  - type: Sandbox
+    url: sandbox/ajaib-sandbox.yml
+  - type: DataModel
+    url: data-model/ajaib-data-model.yml
+  - type: Lifecycle
+    url: lifecycle/ajaib-lifecycle.yml
+  - type: Conformance
+    url: conformance/ajaib-conformance.yml
+  - type: ToolCrosswalk
+    url: mcp/ajaib-tool-crosswalk.yml
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
