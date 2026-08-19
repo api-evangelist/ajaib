@@ -2,11 +2,9 @@ generated: '2026-08-06'
 method: derived
 status: candidate
 source: openapi/ajaib-coin-exchange-openapi.yml
-note: >-
-  Ajaib publishes no MCP server. This is a candidate tool surface derived from
-  the operations in the Ajaib Coin Exchange API so the trading capability is
-  legible to agents; it is not operated by Ajaib and no endpoint is claimed.
-  Every tool below inherits its real input contract from the backing OpenAPI
+note: Ajaib publishes no MCP server. This is a candidate tool surface derived from the operations in the
+  Ajaib Coin Exchange API so the trading capability is legible to agents; it is not operated by Ajaib
+  and no endpoint is claimed. Every tool below inherits its real input contract from the backing OpenAPI
   operation named in source_operation.
 server:
   name: ajaib-coin-exchange
@@ -67,9 +65,8 @@ tools:
   action_class: write
   consequence: financial
 - name: create_self_trading_order
-  description: >-
-    Place a paired buy and sell self-trading order. Restricted to internal
-    market-maker exchange clients.
+  description: Place a paired buy and sell self-trading order. Restricted to internal market-maker exchange
+    clients.
   source_operation: openapi/ajaib-coin-exchange-openapi.yml#createSelfTradingOrder
   auth_required: true
   action_class: write
@@ -93,13 +90,15 @@ tools:
   action_class: write
   consequence: financial
 agent_cautions:
-- >-
-  No idempotency key is documented. An agent that retries create_order or
-  create_batch_orders after a timeout may place duplicate orders against real
-  funds.
-- >-
-  A 200 on an order write means the exchange received the instruction, not that
-  it executed. Confirm with get_order before acting on the result.
-- >-
-  Signing is proprietary and per-request; an MCP server would need the client's
-  ECDSA private key, which the docs say must never be shared.
+- No idempotency key is documented. An agent that retries create_order or create_batch_orders after a
+  timeout may place duplicate orders against real funds.
+- A 200 on an order write means the exchange received the instruction, not that it executed. Confirm with
+  get_order before acting on the result.
+- Signing is proprietary and per-request; an MCP server would need the client's ECDSA private key, which
+  the docs say must never be shared.
+deployment:
+  mode: none
+  verified: derived
+  tools: 14
+  checked: '2026-08-12'
+  source: catalog MCP census

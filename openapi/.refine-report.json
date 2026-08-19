@@ -1,0 +1,23 @@
+{
+  "provider": "ajaib",
+  "sources": [
+    "ajaib-market-info-api-openapi.yml",
+    "ajaib-spot-trading-api-openapi.yml",
+    "ajaib-wallet-api-openapi.yml"
+  ],
+  "outputs": [
+    "ajaib-market-info-api-openapi.yml",
+    "ajaib-spot-trading-api-openapi.yml",
+    "ajaib-wallet-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [
+    "ajaib-market-info-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "ajaib-spot-trading-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "ajaib-wallet-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "apis.yml register: already-registered"
+  ],
+  "skipped": []
+}

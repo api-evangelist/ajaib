@@ -1,0 +1,92 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Ajaib Coin Exchange Market Info API",
+    "version": "v1"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "X-API-KEY",
+      "value": "{{X-API-KEY}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Market Info",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Retrieve server time",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.ajaib.co.id/coin/internal/v1/public/time"
+          },
+          "docs": "Retrieve the server's timestamp. Format is unix timestamp milliseconds with timezone UTC. This endpoint can also be used to test server-client connectivity."
+        },
+        {
+          "info": {
+            "name": "Retrieve information of the exchange",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.ajaib.co.id/coin/internal/v1/public/exchange-info"
+          },
+          "docs": "Retrieves exchange information on the supported trading pairs."
+        },
+        {
+          "info": {
+            "name": "Retrieve order book depth",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.ajaib.co.id/coin/internal/v1/depth",
+            "params": [
+              {
+                "name": "symbol",
+                "value": "",
+                "type": "query",
+                "description": "Trading pair symbol."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Number of levels to return. Default 1, max 100."
+              }
+            ]
+          },
+          "docs": "Retrieves the order book data of a single trading pair."
+        },
+        {
+          "info": {
+            "name": "Retrieve latest price of a trading pair",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.ajaib.co.id/coin/internal/v1/price",
+            "params": [
+              {
+                "name": "symbol",
+                "value": "",
+                "type": "query",
+                "description": "Trading pair symbol."
+              }
+            ]
+          },
+          "docs": "Retrieves the latest price of its trading pair symbol. The quote value varies per trading pair (it is not always USDT)."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

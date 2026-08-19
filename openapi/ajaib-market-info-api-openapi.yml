@@ -1,0 +1,234 @@
+openapi: 3.2.0
+info:
+  title: Ajaib Coin Exchange Market Info API
+  version: v1
+  description: 'RESTful API for the Ajaib Coin Exchange (Ajaib Kripto), the crypto trading venue operated by Ajaib in Indonesia. The API is organized into three surfaces: Market Info (general exchange information), Wallet (portfolio balances) and Spot Trading (view, place and cancel orders and trades). All requests and responses use the `application/json` content type and request URLs are case-sensitive and must be lowercase.'
+  contact:
+    name: Ajaib Coin Exchange
+    email: tech@ajaib.co.id
+    url: https://ajaib.gitbook.io/coin-exchange
+  x-provenance:
+    method: generated
+    generated: '2026-08-06'
+    note: This OpenAPI document was written by API Evangelist from Ajaib's own published API reference. Ajaib does not publish an OpenAPI document. Every path, method, parameter, response field and example below is taken verbatim from the pages listed in x-sources; nothing is invented.
+    x-sources:
+    - https://ajaib.gitbook.io/coin-exchange/overview
+    - https://ajaib.gitbook.io/coin-exchange/getting-started/authentication
+    - https://ajaib.gitbook.io/coin-exchange/getting-started/definitions
+    - https://ajaib.gitbook.io/coin-exchange/getting-started/errors
+    - https://ajaib.gitbook.io/coin-exchange/llms-full.txt
+servers:
+- url: https://api.ajaib.co.id
+  description: Mainnet (production) RESTful API
+- url: https://api.ajaib.tech
+  description: Testnet RESTful API
+security:
+- ApiKeyAuth: []
+  SignatureAuth: []
+  TimestampAuth: []
+tags:
+- name: Market Info
+  description: Retrieve general exchange information.
+paths:
+  /coin/internal/v1/public/time:
+    get:
+      tags:
+      - Market Info
+      operationId: getServerTime
+      summary: Retrieve server time
+      description: Retrieve the server's timestamp. Format is unix timestamp milliseconds with timezone UTC. This endpoint can also be used to test server-client connectivity.
+      security: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerTime'
+              example:
+                timezone: UTC
+                timestamp: 1714440597515
+  /coin/internal/v1/public/exchange-info:
+    get:
+      tags:
+      - Market Info
+      operationId: getExchangeInfo
+      summary: Retrieve information of the exchange
+      description: Retrieves exchange information on the supported trading pairs.
+      security: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ExchangeInfo'
+              example:
+              - symbol: BTC_USDT
+                base_asset: BTC
+                base_precision: 8
+                quote_asset: USDT
+                quote_tick: 0.01
+  /coin/internal/v1/depth:
+    get:
+      tags:
+      - Market Info
+      operationId: getDepth
+      summary: Retrieve order book depth
+      description: Retrieves the order book data of a single trading pair.
+      parameters:
+      - name: symbol
+        in: query
+        required: true
+        description: Trading pair symbol.
+        schema:
+          type: string
+          examples:
+          - BTC_USDT
+      - name: limit
+        in: query
+        required: false
+        description: Number of levels to return. Default 1, max 100.
+        schema:
+          type: integer
+          default: 1
+          maximum: 100
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Depth'
+              example:
+                bids:
+                - price: 38.25
+                  volume: 0.25123
+                asks:
+                - price: 38.25
+                  volume: 0.25123
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /coin/internal/v1/price:
+    get:
+      tags:
+      - Market Info
+      operationId: getPrice
+      summary: Retrieve latest price of a trading pair
+      description: Retrieves the latest price of its trading pair symbol. The quote value varies per trading pair (it is not always USDT).
+      parameters:
+      - name: symbol
+        in: query
+        required: true
+        description: Trading pair symbol.
+        schema:
+          type: string
+          examples:
+          - BTC_USDT
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Price'
+              example:
+                symbol: BTC_USDT
+                price: 65256.11
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+components:
+  schemas:
+    DepthLevel:
+      type: object
+      properties:
+        price:
+          type: number
+        volume:
+          type: number
+    Depth:
+      type: object
+      properties:
+        bids:
+          type: array
+          items:
+            $ref: '#/components/schemas/DepthLevel'
+        asks:
+          type: array
+          items:
+            $ref: '#/components/schemas/DepthLevel'
+    ServerTime:
+      type: object
+      properties:
+        timezone:
+          type: string
+          description: Server time's timezone.
+        timestamp:
+          type: integer
+          format: int64
+          description: Server time in unix epoch milliseconds.
+    ExchangeInfo:
+      type: object
+      properties:
+        symbol:
+          type: string
+          description: The trading pair symbol.
+        base_asset:
+          type: string
+          description: The base asset of the trading pair.
+        base_precision:
+          type: integer
+          description: Number of precision (decimal points) supported.
+        quote_asset:
+          type: string
+          description: The quote asset of the trading pair.
+        quote_tick:
+          type: number
+          description: The minimum tick size supported.
+    Price:
+      type: object
+      properties:
+        symbol:
+          type: string
+        price:
+          type: number
+          description: The latest quote value.
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error enum indicating the specific cause.
+          enum:
+          - invalid_request
+          - invalid_client
+          - insufficient_wallet
+          - order_already_closed
+          - api_error
+  responses:
+    Unauthorized:
+      description: Unauthorized. No valid API key provided.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: invalid_client
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-KEY
+      description: The API key generated for the exchange client by Ajaib.
+    SignatureAuth:
+      type: apiKey
+      in: header
+      name: X-SIGNATURE
+      description: ECDSASHA256 signature over the concatenation of timestamp + method + requestPath + queryParam + requestBody, signed with the client's private key.
+    TimestampAuth:
+      type: apiKey
+      in: header
+      name: X-TIMESTAMP
+      description: Unix timestamp in milliseconds, UTC timezone.

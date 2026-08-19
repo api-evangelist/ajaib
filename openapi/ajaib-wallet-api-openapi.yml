@@ -1,0 +1,126 @@
+openapi: 3.2.0
+info:
+  title: Ajaib Coin Exchange Wallet API
+  version: v1
+  description: 'RESTful API for the Ajaib Coin Exchange (Ajaib Kripto), the crypto trading venue operated by Ajaib in Indonesia. The API is organized into three surfaces: Market Info (general exchange information), Wallet (portfolio balances) and Spot Trading (view, place and cancel orders and trades). All requests and responses use the `application/json` content type and request URLs are case-sensitive and must be lowercase.'
+  contact:
+    name: Ajaib Coin Exchange
+    email: tech@ajaib.co.id
+    url: https://ajaib.gitbook.io/coin-exchange
+  x-provenance:
+    method: generated
+    generated: '2026-08-06'
+    note: This OpenAPI document was written by API Evangelist from Ajaib's own published API reference. Ajaib does not publish an OpenAPI document. Every path, method, parameter, response field and example below is taken verbatim from the pages listed in x-sources; nothing is invented.
+    x-sources:
+    - https://ajaib.gitbook.io/coin-exchange/overview
+    - https://ajaib.gitbook.io/coin-exchange/getting-started/authentication
+    - https://ajaib.gitbook.io/coin-exchange/getting-started/definitions
+    - https://ajaib.gitbook.io/coin-exchange/getting-started/errors
+    - https://ajaib.gitbook.io/coin-exchange/llms-full.txt
+servers:
+- url: https://api.ajaib.co.id
+  description: Mainnet (production) RESTful API
+- url: https://api.ajaib.tech
+  description: Testnet RESTful API
+security:
+- ApiKeyAuth: []
+  SignatureAuth: []
+  TimestampAuth: []
+tags:
+- name: Wallet
+  description: Check funds and assets held by the exchange client.
+paths:
+  /coin/internal/v1/portfolio:
+    get:
+      tags:
+      - Wallet
+      operationId: getPortfolio
+      summary: Retrieve portfolio of a trading account
+      description: Retrieves the aggregated portfolio of the exchange client. Sub-accounts are not supported.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PortfolioAsset'
+              example:
+              - asset: BTC
+                free: 0
+                locked: 0
+              - asset: IDR
+                free: 15000
+                locked: 0
+                equivalent:
+                  asset: USDT
+                  free: 1
+                  locked: 0
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+components:
+  schemas:
+    EquivalentAsset:
+      type: object
+      properties:
+        asset:
+          type: string
+          description: The name of the asset.
+        free:
+          type: number
+          description: The total quantity of free assets.
+        locked:
+          type: number
+          description: The total quantity of locked assets (used for open orders).
+    PortfolioAsset:
+      type: object
+      properties:
+        asset:
+          type: string
+          description: The name of the asset.
+        free:
+          type: number
+          description: The total quantity of free assets.
+        locked:
+          type: number
+          description: The total quantity of locked assets (used for open orders).
+        equivalent:
+          $ref: '#/components/schemas/EquivalentAsset'
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error enum indicating the specific cause.
+          enum:
+          - invalid_request
+          - invalid_client
+          - insufficient_wallet
+          - order_already_closed
+          - api_error
+  responses:
+    Unauthorized:
+      description: Unauthorized. No valid API key provided.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: invalid_client
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-KEY
+      description: The API key generated for the exchange client by Ajaib.
+    SignatureAuth:
+      type: apiKey
+      in: header
+      name: X-SIGNATURE
+      description: ECDSASHA256 signature over the concatenation of timestamp + method + requestPath + queryParam + requestBody, signed with the client's private key.
+    TimestampAuth:
+      type: apiKey
+      in: header
+      name: X-TIMESTAMP
+      description: Unix timestamp in milliseconds, UTC timezone.

@@ -1,0 +1,37 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Ajaib Coin Exchange Wallet API",
+    "version": "v1"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "X-API-KEY",
+      "value": "{{X-API-KEY}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Wallet",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Retrieve portfolio of a trading account",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.ajaib.co.id/coin/internal/v1/portfolio"
+          },
+          "docs": "Retrieves the aggregated portfolio of the exchange client. Sub-accounts are not supported."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

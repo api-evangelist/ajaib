@@ -1,0 +1,179 @@
+{
+  "item": [
+    {
+      "id": "935b8ffd-eadc-44e7-a0ac-ca6d6fbfd9c8",
+      "name": "Wallet",
+      "description": {
+        "content": "Check funds and assets held by the exchange client.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "64d667eb-ed3f-41dc-b6c6-9cd42db76784",
+          "name": "Retrieve portfolio of a trading account",
+          "request": {
+            "name": "Retrieve portfolio of a trading account",
+            "description": {
+              "content": "Retrieves the aggregated portfolio of the exchange client. Sub-accounts are not supported.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "coin",
+                "internal",
+                "v1",
+                "portfolio"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "b0a5a033-7d66-4d08-ae5d-c03feb1f1db4",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "coin",
+                    "internal",
+                    "v1",
+                    "portfolio"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "[\n  {\n    \"asset\": \"BTC\",\n    \"free\": 0,\n    \"locked\": 0\n  },\n  {\n    \"asset\": \"IDR\",\n    \"free\": 15000,\n    \"locked\": 0,\n    \"equivalent\": {\n      \"asset\": \"USDT\",\n      \"free\": 1,\n      \"locked\": 0\n    }\n  }\n]",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "d997893f-86f0-4006-8588-c8cbf0c754ce",
+              "name": "Unauthorized. No valid API key provided.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "coin",
+                    "internal",
+                    "v1",
+                    "portfolio"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"invalid_client\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.ajaib.co.id",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "apikey",
+    "apikey": [
+      {
+        "key": "key",
+        "value": "X-API-KEY"
+      },
+      {
+        "key": "value",
+        "value": "{{apiKey}}"
+      },
+      {
+        "key": "in",
+        "value": "header"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "77bdd6c6-296d-42c3-ab7f-9cd99635b4ba",
+    "name": "Ajaib Coin Exchange Wallet API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "RESTful API for the Ajaib Coin Exchange (Ajaib Kripto), the crypto trading venue operated by Ajaib in Indonesia. The API is organized into three surfaces: Market Info (general exchange information), Wallet (portfolio balances) and Spot Trading (view, place and cancel orders and trades). All requests and responses use the `application/json` content type and request URLs are case-sensitive and must be lowercase.\n\nContact Support:\n Name: Ajaib Coin Exchange\n Email: tech@ajaib.co.id",
+      "type": "text/plain"
+    }
+  }
+}
