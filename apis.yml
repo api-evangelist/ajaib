@@ -20,6 +20,19 @@ created: '2026-08-06'
 modified: '2026-08-06'
 tags:
 - Company
+- Financial-Services
+- Investing
+- Brokerage
+- Trading
+- Cryptocurrency
+- Crypto Exchange
+- Stocks
+- Mutual Funds
+- Fintech
+- Indonesia
+- Wealth Management
+tags_raw:
+- Company
 - Financial Services
 - Investing
 - Brokerage
@@ -102,6 +115,8 @@ apis:
   humanURL: https://ajaib.gitbook.io/coin-exchange
   baseURL: https://api.ajaib.co.id
   tags:
+  - Wallets
+  tags_raw:
   - Wallet
   properties:
   - type: OpenAPI
