@@ -11,6 +11,18 @@ description: >-
   Access is not self-service: clients generate an ECDSASHA256 keypair, email the
   public key to Ajaib, and sign every request with X-API-KEY, X-SIGNATURE and
   X-TIMESTAMP headers. Ajaib publishes no OpenAPI, no SDKs and no status page.
+deliveryModel:
+  model: saas
+  open_source: false
+  commercial: true
+  callable_host: true
+  label: Hosted service · you call their endpoint
+  confidence: high
+  source:
+  - openapi
+  - pricing
+  generated: '2026-08-28'
+  method: derived
 image: https://avatars.githubusercontent.com/u/45261753?v=4
 url: https://raw.githubusercontent.com/api-evangelist/ajaib/refs/heads/main/apis.yml
 x-type: company
