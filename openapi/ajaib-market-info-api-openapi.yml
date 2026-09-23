@@ -141,34 +141,6 @@ paths:
           $ref: '#/components/responses/Unauthorized'
 components:
   schemas:
-    DepthLevel:
-      type: object
-      properties:
-        price:
-          type: number
-        volume:
-          type: number
-    Depth:
-      type: object
-      properties:
-        bids:
-          type: array
-          items:
-            $ref: '#/components/schemas/DepthLevel'
-        asks:
-          type: array
-          items:
-            $ref: '#/components/schemas/DepthLevel'
-    ServerTime:
-      type: object
-      properties:
-        timezone:
-          type: string
-          description: Server time's timezone.
-        timestamp:
-          type: integer
-          format: int64
-          description: Server time in unix epoch milliseconds.
     ExchangeInfo:
       type: object
       properties:
@@ -187,6 +159,16 @@ components:
         quote_tick:
           type: number
           description: The minimum tick size supported.
+    ServerTime:
+      type: object
+      properties:
+        timezone:
+          type: string
+          description: Server time's timezone.
+        timestamp:
+          type: integer
+          format: int64
+          description: Server time in unix epoch milliseconds.
     Price:
       type: object
       properties:
@@ -207,6 +189,24 @@ components:
           - insufficient_wallet
           - order_already_closed
           - api_error
+    Depth:
+      type: object
+      properties:
+        bids:
+          type: array
+          items:
+            $ref: '#/components/schemas/DepthLevel'
+        asks:
+          type: array
+          items:
+            $ref: '#/components/schemas/DepthLevel'
+    DepthLevel:
+      type: object
+      properties:
+        price:
+          type: number
+        volume:
+          type: number
   responses:
     Unauthorized:
       description: Unauthorized. No valid API key provided.

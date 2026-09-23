@@ -382,14 +382,19 @@ paths:
           $ref: '#/components/responses/Unauthorized'
 components:
   schemas:
-    NewOrderResponse:
-      type: object
-      properties:
-        order_id:
-          type: integer
-          format: int64
-        status:
-          $ref: '#/components/schemas/OrderStatus'
+    OrderStatus:
+      type: string
+      enum:
+      - NEW
+      - OPEN
+      - PARTIAL_FILLED
+      - FILLED
+      - PARTIAL_CANCELLED
+      - CANCELLED
+      - REJECTED
+      - EXPIRED
+      - EXPIRED_IN_MATCH
+      - PARTIALLY_EXPIRED_IN_MATCH
     OrderType:
       type: string
       description: LIMIT, MARKET, or LIMIT_MAKER (if the order is a taker, it will be expired).
@@ -397,6 +402,21 @@ components:
       - LIMIT
       - MARKET
       - LIMIT_MAKER
+    BatchCancelResult:
+      type: object
+      properties:
+        success:
+          type: array
+          description: List of order ids that were successfully cancelled.
+          items:
+            type: integer
+            format: int64
+        fail:
+          type: array
+          description: List of order ids that failed to cancel.
+          items:
+            type: integer
+            format: int64
     BatchOrderItem:
       type: object
       required:
@@ -413,25 +433,98 @@ components:
           type: number
         quantity:
           type: number
+    Order:
+      type: object
+      properties:
+        order_id:
+          type: integer
+          format: int64
+        side:
+          $ref: '#/components/schemas/OrderSide'
+        status:
+          $ref: '#/components/schemas/OrderStatus'
+        symbol:
+          type: string
+        type:
+          $ref: '#/components/schemas/OrderType'
+        price:
+          type: number
+        quantity:
+          type: number
+        avg_price:
+          type: number
+          description: Average matched or executed price of trades under the order. Returns 0 if no trade or match.
+        executed_quantity:
+          type: number
+          description: Total order quantity already matched or executed. Always less than or equal to quantity.
+        created_at:
+          type: integer
+          format: int64
+        updated_at:
+          type: integer
+          format: int64
+    NewOrderRequest:
+      type: object
+      required:
+      - side
+      - symbol
+      - type
+      - price
+      - quantity
+      properties:
+        side:
+          $ref: '#/components/schemas/OrderSide'
+        symbol:
+          type: string
+        type:
+          type: string
+          description: Only LIMIT and LIMIT_MAKER are allowed on this endpoint.
+          enum:
+          - LIMIT
+          - LIMIT_MAKER
+        price:
+          type: number
+        quantity:
+          type: number
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error enum indicating the specific cause.
+          enum:
+          - invalid_request
+          - invalid_client
+          - insufficient_wallet
+          - order_already_closed
+          - api_error
     OrderSide:
       type: string
       description: BUY takes away liquidity from the order book (taker); SELL supplies liquidity to the order book (maker).
       enum:
       - BUY
       - SELL
-    OrderStatus:
-      type: string
-      enum:
-      - NEW
-      - OPEN
-      - PARTIAL_FILLED
-      - FILLED
-      - PARTIAL_CANCELLED
-      - CANCELLED
-      - REJECTED
-      - EXPIRED
-      - EXPIRED_IN_MATCH
-      - PARTIALLY_EXPIRED_IN_MATCH
+    SelfTradingOrderRequest:
+      type: object
+      required:
+      - symbol
+      - price
+      - quantity
+      properties:
+        symbol:
+          type: string
+        price:
+          type: number
+        quantity:
+          type: number
+    NewOrderResponse:
+      type: object
+      properties:
+        order_id:
+          type: integer
+          format: int64
+        status:
+          $ref: '#/components/schemas/OrderStatus'
     Trade:
       type: object
       properties:
@@ -484,108 +577,7 @@ components:
             format: int64
         symbol:
           type: string
-    NewOrderRequest:
-      type: object
-      required:
-      - side
-      - symbol
-      - type
-      - price
-      - quantity
-      properties:
-        side:
-          $ref: '#/components/schemas/OrderSide'
-        symbol:
-          type: string
-        type:
-          type: string
-          description: Only LIMIT and LIMIT_MAKER are allowed on this endpoint.
-          enum:
-          - LIMIT
-          - LIMIT_MAKER
-        price:
-          type: number
-        quantity:
-          type: number
-    SelfTradingOrderRequest:
-      type: object
-      required:
-      - symbol
-      - price
-      - quantity
-      properties:
-        symbol:
-          type: string
-        price:
-          type: number
-        quantity:
-          type: number
-    Error:
-      type: object
-      properties:
-        error:
-          type: string
-          description: Error enum indicating the specific cause.
-          enum:
-          - invalid_request
-          - invalid_client
-          - insufficient_wallet
-          - order_already_closed
-          - api_error
-    Order:
-      type: object
-      properties:
-        order_id:
-          type: integer
-          format: int64
-        side:
-          $ref: '#/components/schemas/OrderSide'
-        status:
-          $ref: '#/components/schemas/OrderStatus'
-        symbol:
-          type: string
-        type:
-          $ref: '#/components/schemas/OrderType'
-        price:
-          type: number
-        quantity:
-          type: number
-        avg_price:
-          type: number
-          description: Average matched or executed price of trades under the order. Returns 0 if no trade or match.
-        executed_quantity:
-          type: number
-          description: Total order quantity already matched or executed. Always less than or equal to quantity.
-        created_at:
-          type: integer
-          format: int64
-        updated_at:
-          type: integer
-          format: int64
-    BatchCancelResult:
-      type: object
-      properties:
-        success:
-          type: array
-          description: List of order ids that were successfully cancelled.
-          items:
-            type: integer
-            format: int64
-        fail:
-          type: array
-          description: List of order ids that failed to cancel.
-          items:
-            type: integer
-            format: int64
   responses:
-    BadRequest:
-      description: Bad Request. The request was unacceptable, often due to a missing required parameter.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            error: invalid_request
     Unauthorized:
       description: Unauthorized. No valid API key provided.
       content:
@@ -594,6 +586,14 @@ components:
             $ref: '#/components/schemas/Error'
           example:
             error: invalid_client
+    BadRequest:
+      description: Bad Request. The request was unacceptable, often due to a missing required parameter.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: invalid_request
   securitySchemes:
     ApiKeyAuth:
       type: apiKey

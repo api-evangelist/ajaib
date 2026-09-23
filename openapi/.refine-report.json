@@ -1,9 +1,7 @@
 {
   "provider": "ajaib",
   "sources": [
-    "ajaib-market-info-api-openapi.yml",
-    "ajaib-spot-trading-api-openapi.yml",
-    "ajaib-wallet-api-openapi.yml"
+    "_original/ajaib-coin-exchange-openapi.yml"
   ],
   "outputs": [
     "ajaib-market-info-api-openapi.yml",
@@ -14,10 +12,13 @@
   "errors": [],
   "warnings": [],
   "notes": [
-    "ajaib-market-info-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
-    "ajaib-spot-trading-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
-    "ajaib-wallet-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "ajaib-coin-exchange-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
     "apis.yml register: already-registered"
   ],
-  "skipped": []
+  "skipped": [
+    "ajaib-market-info-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "ajaib-spot-trading-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "ajaib-wallet-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
 }
