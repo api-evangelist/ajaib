@@ -50,7 +50,7 @@ x-docs-platform-confidence: medium
 x-docs-platform-checked: 2026-09-17
 tags:
 - Company
-- Financial-Services
+- Financial Services
 - Investing
 - Brokerage
 - Trading
@@ -74,6 +74,7 @@ tags_raw:
 - Fintech
 - Indonesia
 - Wealth Management
+- Financial-Services
 apis:
 - aid: ajaib:ajaib-market-info-api
   name: Ajaib Market Info API

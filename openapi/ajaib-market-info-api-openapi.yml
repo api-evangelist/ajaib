@@ -141,34 +141,17 @@ paths:
           $ref: '#/components/responses/Unauthorized'
 components:
   schemas:
-    ExchangeInfo:
+    Depth:
       type: object
       properties:
-        symbol:
-          type: string
-          description: The trading pair symbol.
-        base_asset:
-          type: string
-          description: The base asset of the trading pair.
-        base_precision:
-          type: integer
-          description: Number of precision (decimal points) supported.
-        quote_asset:
-          type: string
-          description: The quote asset of the trading pair.
-        quote_tick:
-          type: number
-          description: The minimum tick size supported.
-    ServerTime:
-      type: object
-      properties:
-        timezone:
-          type: string
-          description: Server time's timezone.
-        timestamp:
-          type: integer
-          format: int64
-          description: Server time in unix epoch milliseconds.
+        bids:
+          type: array
+          items:
+            $ref: '#/components/schemas/DepthLevel'
+        asks:
+          type: array
+          items:
+            $ref: '#/components/schemas/DepthLevel'
     Price:
       type: object
       properties:
@@ -189,17 +172,24 @@ components:
           - insufficient_wallet
           - order_already_closed
           - api_error
-    Depth:
+    ExchangeInfo:
       type: object
       properties:
-        bids:
-          type: array
-          items:
-            $ref: '#/components/schemas/DepthLevel'
-        asks:
-          type: array
-          items:
-            $ref: '#/components/schemas/DepthLevel'
+        symbol:
+          type: string
+          description: The trading pair symbol.
+        base_asset:
+          type: string
+          description: The base asset of the trading pair.
+        base_precision:
+          type: integer
+          description: Number of precision (decimal points) supported.
+        quote_asset:
+          type: string
+          description: The quote asset of the trading pair.
+        quote_tick:
+          type: number
+          description: The minimum tick size supported.
     DepthLevel:
       type: object
       properties:
@@ -207,6 +197,16 @@ components:
           type: number
         volume:
           type: number
+    ServerTime:
+      type: object
+      properties:
+        timezone:
+          type: string
+          description: Server time's timezone.
+        timestamp:
+          type: integer
+          format: int64
+          description: Server time in unix epoch milliseconds.
   responses:
     Unauthorized:
       description: Unauthorized. No valid API key provided.

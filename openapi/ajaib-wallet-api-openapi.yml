@@ -61,30 +61,6 @@ paths:
           $ref: '#/components/responses/Unauthorized'
 components:
   schemas:
-    EquivalentAsset:
-      type: object
-      properties:
-        asset:
-          type: string
-          description: The name of the asset.
-        free:
-          type: number
-          description: The total quantity of free assets.
-        locked:
-          type: number
-          description: The total quantity of locked assets (used for open orders).
-    Error:
-      type: object
-      properties:
-        error:
-          type: string
-          description: Error enum indicating the specific cause.
-          enum:
-          - invalid_request
-          - invalid_client
-          - insufficient_wallet
-          - order_already_closed
-          - api_error
     PortfolioAsset:
       type: object
       properties:
@@ -99,6 +75,30 @@ components:
           description: The total quantity of locked assets (used for open orders).
         equivalent:
           $ref: '#/components/schemas/EquivalentAsset'
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error enum indicating the specific cause.
+          enum:
+          - invalid_request
+          - invalid_client
+          - insufficient_wallet
+          - order_already_closed
+          - api_error
+    EquivalentAsset:
+      type: object
+      properties:
+        asset:
+          type: string
+          description: The name of the asset.
+        free:
+          type: number
+          description: The total quantity of free assets.
+        locked:
+          type: number
+          description: The total quantity of locked assets (used for open orders).
   responses:
     Unauthorized:
       description: Unauthorized. No valid API key provided.
