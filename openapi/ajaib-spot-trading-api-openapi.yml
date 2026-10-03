@@ -382,61 +382,6 @@ paths:
           $ref: '#/components/responses/Unauthorized'
 components:
   schemas:
-    OrderStatus:
-      type: string
-      enum:
-      - NEW
-      - OPEN
-      - PARTIAL_FILLED
-      - FILLED
-      - PARTIAL_CANCELLED
-      - CANCELLED
-      - REJECTED
-      - EXPIRED
-      - EXPIRED_IN_MATCH
-      - PARTIALLY_EXPIRED_IN_MATCH
-    NewOrderRequest:
-      type: object
-      required:
-      - side
-      - symbol
-      - type
-      - price
-      - quantity
-      properties:
-        side:
-          $ref: '#/components/schemas/OrderSide'
-        symbol:
-          type: string
-        type:
-          type: string
-          description: Only LIMIT and LIMIT_MAKER are allowed on this endpoint.
-          enum:
-          - LIMIT
-          - LIMIT_MAKER
-        price:
-          type: number
-        quantity:
-          type: number
-    BatchCancelRequest:
-      type: object
-      required:
-      - order_ids
-      - symbol
-      properties:
-        order_ids:
-          type: array
-          items:
-            type: integer
-            format: int64
-        symbol:
-          type: string
-    OrderSide:
-      type: string
-      description: BUY takes away liquidity from the order book (taker); SELL supplies liquidity to the order book (maker).
-      enum:
-      - BUY
-      - SELL
     BatchCancelResult:
       type: object
       properties:
@@ -464,6 +409,19 @@ components:
           - insufficient_wallet
           - order_already_closed
           - api_error
+    OrderStatus:
+      type: string
+      enum:
+      - NEW
+      - OPEN
+      - PARTIAL_FILLED
+      - FILLED
+      - PARTIAL_CANCELLED
+      - CANCELLED
+      - REJECTED
+      - EXPIRED
+      - EXPIRED_IN_MATCH
+      - PARTIALLY_EXPIRED_IN_MATCH
     BatchNewOrdersRequest:
       type: object
       required:
@@ -476,6 +434,36 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/BatchOrderItem'
+    NewOrderRequest:
+      type: object
+      required:
+      - side
+      - symbol
+      - type
+      - price
+      - quantity
+      properties:
+        side:
+          $ref: '#/components/schemas/OrderSide'
+        symbol:
+          type: string
+        type:
+          type: string
+          description: Only LIMIT and LIMIT_MAKER are allowed on this endpoint.
+          enum:
+          - LIMIT
+          - LIMIT_MAKER
+        price:
+          type: number
+        quantity:
+          type: number
+    OrderType:
+      type: string
+      description: LIMIT, MARKET, or LIMIT_MAKER (if the order is a taker, it will be expired).
+      enum:
+      - LIMIT
+      - MARKET
+      - LIMIT_MAKER
     NewOrderResponse:
       type: object
       properties:
@@ -484,6 +472,25 @@ components:
           format: int64
         status:
           $ref: '#/components/schemas/OrderStatus'
+    BatchCancelRequest:
+      type: object
+      required:
+      - order_ids
+      - symbol
+      properties:
+        order_ids:
+          type: array
+          items:
+            type: integer
+            format: int64
+        symbol:
+          type: string
+    OrderSide:
+      type: string
+      description: BUY takes away liquidity from the order book (taker); SELL supplies liquidity to the order book (maker).
+      enum:
+      - BUY
+      - SELL
     BatchOrderItem:
       type: object
       required:
@@ -496,19 +503,6 @@ components:
           $ref: '#/components/schemas/OrderSide'
         type:
           $ref: '#/components/schemas/OrderType'
-        price:
-          type: number
-        quantity:
-          type: number
-    SelfTradingOrderRequest:
-      type: object
-      required:
-      - symbol
-      - price
-      - quantity
-      properties:
-        symbol:
-          type: string
         price:
           type: number
         quantity:
@@ -540,13 +534,19 @@ components:
           type: boolean
         is_self_trade:
           type: boolean
-    OrderType:
-      type: string
-      description: LIMIT, MARKET, or LIMIT_MAKER (if the order is a taker, it will be expired).
-      enum:
-      - LIMIT
-      - MARKET
-      - LIMIT_MAKER
+    SelfTradingOrderRequest:
+      type: object
+      required:
+      - symbol
+      - price
+      - quantity
+      properties:
+        symbol:
+          type: string
+        price:
+          type: number
+        quantity:
+          type: number
     Order:
       type: object
       properties:

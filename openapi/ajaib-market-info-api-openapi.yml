@@ -141,25 +141,13 @@ paths:
           $ref: '#/components/responses/Unauthorized'
 components:
   schemas:
-    Depth:
+    DepthLevel:
       type: object
       properties:
-        bids:
-          type: array
-          items:
-            $ref: '#/components/schemas/DepthLevel'
-        asks:
-          type: array
-          items:
-            $ref: '#/components/schemas/DepthLevel'
-    Price:
-      type: object
-      properties:
-        symbol:
-          type: string
         price:
           type: number
-          description: The latest quote value.
+        volume:
+          type: number
     Error:
       type: object
       properties:
@@ -190,13 +178,25 @@ components:
         quote_tick:
           type: number
           description: The minimum tick size supported.
-    DepthLevel:
+    Depth:
       type: object
       properties:
+        bids:
+          type: array
+          items:
+            $ref: '#/components/schemas/DepthLevel'
+        asks:
+          type: array
+          items:
+            $ref: '#/components/schemas/DepthLevel'
+    Price:
+      type: object
+      properties:
+        symbol:
+          type: string
         price:
           type: number
-        volume:
-          type: number
+          description: The latest quote value.
     ServerTime:
       type: object
       properties:
