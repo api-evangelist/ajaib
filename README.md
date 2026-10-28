@@ -64,5 +64,121 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-Ajaib is a company surfaced via the API Evangelist harvest backlog (source: secondary-market) and added to the network as a stub for full-pipeline profiling.
-- https://www.hiive.com/securities/ajaib-stock
+Ajaib is an Indonesian fintech and online brokerage founded in 2018 that gives retail investors access to Indonesian stocks, mutual funds, bonds, US stocks and crypto from a single mobile app. It operates PT Ajaib Sekuritas Asia for equities and Ajaib Kripto for digital assets, and became Southeast Asia's first investment unicorn in 2021. Its one public developer surface is the Ajaib Coin Exchange API, a REST trading interface for the crypto venue, documented on GitBook and organized into Market Info, Wallet and Spot Trading. Access is not self-service: clients generate an ECDSASHA256 keypair, email the public key to Ajaib, and sign every request with X-API-KEY, X-SIGNATURE and X-TIMESTAMP headers. Ajaib publishes no OpenAPI, no SDKs and no status page.
+
+**Areas:** Company · Financial Services · Investing · Brokerage · Trading · Cryptocurrency · Cryptocurrency Exchange · Stocks · Mutual Funds · Fintech · Indonesia · Wealth Management
+
+## Ajaib on APIs.io
+
+Everything profiled for Ajaib is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/ajaib/](https://apis.io/providers/ajaib/)** — or go straight to one of the APIs or properties below.
+
+### APIs (3)
+
+- [Ajaib Market Info API](https://apis.io/apis/ajaib/ajaib-market-info-api/) — Retrieve general exchange information.
+- [Ajaib Spot Trading API](https://apis.io/apis/ajaib/ajaib-spot-trading-api/) — View, place and cancel spot orders and trades.
+- [Ajaib Wallet API](https://apis.io/apis/ajaib/ajaib-wallet-api/) — Check funds and assets held by the exchange client.
+
+### Published properties
+
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
+
+#### MCP servers (1)
+
+Model Context Protocol servers that expose the API to agents.
+
+- [ajaib-coin-exchange](https://apis.io/servers/ajaib/ajaib-coin-exchange/)
+
+#### Agentic access (1)
+
+Which operations an agent can call, which act, and which need a human in the loop.
+
+- [Ajaib Agentic Access](https://apis.io/agentic-access/ajaib/ajaib-agentic-access/)
+
+#### Collections (3)
+
+Postman and Open Collection request collections.
+
+- [Ajaib Coin Exchange Market Info API](https://apis.io/collections/ajaib/open-ajaib-market-info-api/)
+- [Ajaib Coin Exchange Spot Trading API](https://apis.io/collections/ajaib/open-ajaib-spot-trading-api/)
+- [Ajaib Coin Exchange Wallet API](https://apis.io/collections/ajaib/open-ajaib-wallet-api/)
+
+#### Overlays (1)
+
+OpenAPI overlays, including conversational phrasing for each operation.
+
+- [Ajaib Coin Exchange Overlay](https://apis.io/overlays/ajaib/ajaib-coin-exchange-overlay/)
+
+#### Security (3)
+
+Authentication, trust centre, and vulnerability disclosure.
+
+- [Ajaib Authentication](https://apis.io/security/ajaib/ajaib-authentication/)
+- [Ajaib Domain Security](https://apis.io/security/ajaib/ajaib-domain-security/)
+- [Ajaib Vulnerability Disclosure](https://apis.io/security/ajaib/ajaib-vulnerability-disclosure/)
+
+## Where to find this API
+
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
+
+- [Website](https://ajaib.co.id/)
+- [Documentation](https://ajaib.gitbook.io/coin-exchange)
+- [Getting started](https://ajaib.gitbook.io/coin-exchange/getting-started/authentication)
+- [API reference](https://ajaib.gitbook.io/coin-exchange/api-references/market-info)
+- [Support](https://ajaib.co.id/pusat-bantuan)
+- [Blog](https://ajaib.co.id/belajar)
+- [Terms of service](https://ajaib.co.id/legal)
+- [Privacy policy](https://ajaib.co.id/legal)
+- [GitHub](https://github.com/ajaibid)
+
+## API Evangelist rating
+
+**Kin Score 31.3** — thin · rubric 0.24.0 · scored 2026-10-17
+
+| Facet | Score |
+|---|---|
+| Discoverability | 73.2 |
+| Contract quality | 15.3 |
+| Contract governance | 4.5 |
+| Operational transparency | 13.2 |
+| Developer ergonomics | 66.1 |
+| Access clarity | 21.1 |
+
+**Agent readiness 27.8** — agent-aware
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | yes |
+| Agentic Access | derived (partial credit) |
+| Reversibility Documented | documented (partial credit) |
+| MCP Server | — |
+| Auth Clarity | bearer (partial credit) |
+| Idempotency | — |
+| Error Semantics | documented (partial credit) |
+| OpenAPI Examples | verified |
+| Rate Limit Signal | — |
+| Event Surface Described | — |
+| Agent Skills | derived (partial credit) |
+| Well Known Catalog | — |
+| Consent Identity | — |
+| Agent Card | — |
+| Dry Run Mode | — |
+| Delegated Identity | — |
+| Protected Resource Metadata | — |
+| Dynamic Client Registration | — |
+| Agentic Commerce | — |
+
+**Regulatory alignment 28.7** — Securities & Market Data
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/ajaib/](https://apis.io/providers/ajaib/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for Ajaib: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/ajaib/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
